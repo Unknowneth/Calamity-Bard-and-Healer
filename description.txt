@@ -1,0 +1,53 @@
+This mod now has a wiki, but it is incomplete, feel free to help: https://terrariamods.wiki.gg/wiki/Thorium_Crossmod/Unofficial_Calamity_Bard_%26_Healer
+
+Alternate download (or if you wanna support me, just download it and delete the file after, you don't have to pay at all) https://www.curseforge.com/terraria/mods/unofficial-calamity-bard-and-healer
+
+This mod aims to add Thorium bard and healer class content based off of the Calamity, Catalyst, Infernum, Entropy and Hunt of the Old God mods
+
+Most of the weapons are obtained either through killing bosses, crafting with world materials, decrypting schematics or exhuming items from Calamitas NPC
+-Recommended to be used with boss checklist if you do not know which boss drops which
+
+Special thanks to:
+-skyzephire for contributing sprites (resprited Slag Fury's Intent, Duality and Transfiguration)
+
+Notable additions:
+-Calamity armor sets for bard (Aerospec, Statigel, Daedalus, Hydrothermic, Tarragon, Bloodflare, God Slayer, Auric Tesla)
+-Calamity armor sets for healer (Aerospec, Statigel, Daedalus, Hydrothermic, Tarragon, Bloodflare, Silva, Auric Tesla)
+-A bard weapon with an Ark of the Cosmos-like crafting tree
+-Elemental themed weapons and accessory for healer
+-Ethereal Talisman equivalent for bard
+-Draedon arsenal instruments and healing spells
+-New scythe variant (Heavy scythes, identified by their vertical sprites as supposed to diagonal, they always grant soul essence on direct hits at the cost of slower overall attack rate, do note that all my other cross mods will contain this new variant!)
+-A config option to merge thrower and rogue's damage types
+
+Notable compatibilites:
+-Adds Intergelactic and Augmented Auric Tesla bard and healer helmets when Catalyst mod is installed
+-Adds Metanova bard and healer weapons when Catalyst mod is installed
+-Adds Bereft Vassal bard and healer drops when Infernum is installed
+-Adds Goozma bard and healer drops when Hunt of the Old God is installed
+-Supports Fargo's Souls x Calamity Compatibility Mod, adding some bard and healer helmet effects to some added enchantment accessories
+
+It also changes some aspects from both mods and allow them to interact with each other. Changes include:
+-Allows Calamity multiclass armor sets (like Demonshade, Omega Blue and Astral) to work with bard and healer
+-Allows Cosmic Anvil to craft Thorium Anvil recipes
+-Allows Draedon's Forge to craft Soul Forge and Thorium Anvil recipes while also changing its recipe to require a Soul Forge as supposed to hardmode ore forges
+-Bard and healer weapons now work with Luxor's gift and spawn their own custom projectiles
+-Belching saxophone, Anahita's arpeggio and Face Melter are now bard weapons and give empowerments (if Ragnarok Mod is installed, this mod overrides it)
+-Celestial Carrier and Shooting Star Turbo Tuba now have armor set bonuses like Exodus wings
+-Registers some of Calamity's damage over time effects to Thorium's list of damage over time debuffs for the sake of certain healer items
+-Registers some of Calamity's status effects to Thorium's list of cureable status debuffs for the sake of certain healer items
+-Resource consumption reduction works on rogue, decreasing stealth usage
+-Resource maximum empowerment works on rogue, increasing maximum stealth
+-Resource regeneration empowerment works on rogue, increasing overall stealth generation
+-Revengance adrenaline mode triples healing bonuses while active
+-Revengance rage mode grants infinite inspiration while active
+-Recipe changes for progression reasons (e.g. "Terra" weapons from Thorium, early pre-hardmode stuff because of its progression rework)
+
+Note: This mod needs both Thorium and Calamity to work!
+If you're interested, I made one of these for Redemption, Spirit and Spooky mods
+
+Side notes: 
+-If you are using Ragnarok mod, be sure to check its configs! It now attempts to "de-duplicate" certain features from this mod, so keep that in mind.
+-Healer spells added by this mod do not work with healing dummies due to the projectiles using custom hitboxes
+-If you want AI changes for Thorium's bosses go see my other mod called "Thorium Helheim" which has Calamity and Fargo integration
+-Some bard weapons are based off of actual Calamity music instruments (and yes, that means the bell as well.)

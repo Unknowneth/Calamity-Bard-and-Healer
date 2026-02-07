@@ -1,0 +1,6 @@
+displayName = Unofficial Calamity Bard & Healer
+author = n0t_UN_Owen
+version = 0.12.0
+weakReferences = CatalystMod, CalamityEntropy
+modReferences = ThoriumMod, CalamityMod
+sortAfter = ThoriumMod, CalamityMod, FargowiltasCrossmod
