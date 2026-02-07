@@ -1,0 +1,117 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ID;
+using Terraria.Audio;
+using Terraria.ModLoader;
+using ThoriumMod.Projectiles.Scythe;
+using System.IO;
+
+namespace CalamityBardHealer.Projectiles
+{
+	public class WulfrumWeedWacker : ScythePro
+	{
+		public override string Texture => "CalamityBardHealer/Items/WulfrumWeedWacker";
+		public override void SafeSetDefaults() {
+			base.Projectile.width = 42;
+			base.Projectile.height = 50;
+			base.Projectile.idStaticNPCHitCooldown = 8;
+			base.Projectile.alpha = 255;
+			base.Projectile.manualDirectionChange = true;
+		}
+		public override bool PreAI() {
+			float swingTime = 0f;
+			Player player = Main.player[base.Projectile.owner];
+			base.Projectile.scale = player.GetAdjustedItemScale(player.HeldItem);
+			if(base.Projectile.ai[1] <= 0 || player.dead) {
+				base.Projectile.Kill();
+				return false;
+			}
+			base.Projectile.timeLeft = (int)base.Projectile.ai[1];
+			player.itemTime = (int)base.Projectile.ai[1];
+			player.itemAnimation = (int)base.Projectile.ai[1];
+			player.heldProj = base.Projectile.whoAmI;
+			player.compositeFrontArm.enabled = true;
+			if(base.Projectile.velocity.X != 0) player.ChangeDir(base.Projectile.velocity.X > 0 ? 1 : -1);
+			float swing = 0f;
+			float armSwing = 0f;
+			if(base.Projectile.direction == -1) {
+				if(base.Projectile.ai[1] / base.Projectile.ai[0] > 0.75f) {
+					if(player.whoAmI == Main.myPlayer) {
+						base.Projectile.velocity = Vector2.Normalize(Main.MouseWorld - player.MountedCenter);
+						NetMessage.SendData(27, -1, -1, null, base.Projectile.whoAmI);
+					}
+					swingTime = (base.Projectile.ai[1] / base.Projectile.ai[0] - 0.75f) * 4f;
+					swing = base.Projectile.velocity.ToRotation() + MathHelper.ToRadians(MathHelper.SmoothStep(135f, 80f, swingTime) * player.direction);
+					armSwing = base.Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.PiOver2, MathHelper.PiOver4, swingTime) * player.direction;
+				}
+				else {
+					swingTime = base.Projectile.ai[1] / (base.Projectile.ai[0] * 0.75f);
+					for(int e = 0; e < 4; e++) swingTime = MathHelper.SmoothStep(0f, 1f, swingTime);
+					swing = MathHelper.Lerp(MathHelper.ToRadians(100) * -player.direction, MathHelper.ToRadians(135) * player.direction, swingTime) + base.Projectile.velocity.ToRotation();
+					armSwing = MathHelper.Lerp(MathHelper.PiOver2 * -player.direction, MathHelper.PiOver2 * player.direction, swingTime) + base.Projectile.velocity.ToRotation();
+				}
+				base.Projectile.spriteDirection = -player.direction;
+			}
+			else {
+				if(base.Projectile.ai[1] / base.Projectile.ai[0] > 0.75f) {
+					if(player.whoAmI == Main.myPlayer) {
+						base.Projectile.velocity = Vector2.Normalize(Main.MouseWorld - player.MountedCenter);
+						NetMessage.SendData(27, -1, -1, null, base.Projectile.whoAmI);
+					}
+					swingTime = (base.Projectile.ai[1] / base.Projectile.ai[0] - 0.75f) * 4f;
+					swing = base.Projectile.velocity.ToRotation() - MathHelper.ToRadians(MathHelper.SmoothStep(135f, 80f, swingTime) * player.direction);
+					armSwing = base.Projectile.velocity.ToRotation() - MathHelper.Lerp(MathHelper.PiOver2, MathHelper.PiOver4, swingTime) * player.direction;
+				}
+				else {
+					swingTime = base.Projectile.ai[1] / (base.Projectile.ai[0] * 0.75f);
+					for(int e = 0; e < 4; e++) swingTime = MathHelper.SmoothStep(0f, 1f, swingTime);
+					swing = MathHelper.Lerp(MathHelper.ToRadians(100) * player.direction, MathHelper.ToRadians(135) * -player.direction, swingTime) + base.Projectile.velocity.ToRotation();
+					armSwing = MathHelper.Lerp(MathHelper.PiOver2 * player.direction, MathHelper.PiOver2 * -player.direction, swingTime) + base.Projectile.velocity.ToRotation();
+				}
+				base.Projectile.spriteDirection = player.direction;
+			}
+			if(base.Projectile.localAI[2] == 0f && base.Projectile.ai[1] <= base.Projectile.ai[0] * 0.5f) {
+				if(Main.myPlayer == player.whoAmI) {
+					int p = Projectile.NewProjectile(player.GetSource_ItemUse(player.HeldItem), base.Projectile.Center + Vector2.Normalize(base.Projectile.velocity) * base.Projectile.height, Vector2.Normalize(base.Projectile.velocity) * 8f, ModContent.ProjectileType<Projectiles.WulfrumWeedWackerWave>(), base.Projectile.damage, base.Projectile.knockBack, player.whoAmI);
+					NetMessage.SendData(27, -1, -1, null, p);
+				}
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, player.position);
+				base.Projectile.localAI[2]++;
+			}
+			if(base.Projectile.alpha > 0) base.Projectile.alpha -= 51;
+			player.compositeFrontArm.rotation = armSwing - MathHelper.PiOver2 - (player.gravDir - 1) * MathHelper.PiOver2;
+			base.Projectile.Center = player.GetFrontHandPosition(player.compositeFrontArm.stretch, player.compositeFrontArm.rotation);
+			base.Projectile.rotation = swing;
+			if(base.Projectile.ai[1] > 0f) base.Projectile.ai[1]--;
+			return false;
+		}
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+			float point = 0f;
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), base.Projectile.Center, base.Projectile.Center + base.Projectile.rotation.ToRotationVector2() * base.Projectile.height * base.Projectile.scale, base.Projectile.width * base.Projectile.scale * 0.5f, ref point);
+		}
+		public override bool PreDraw(ref Color lightColor) {
+			Vector2 lighting = base.Projectile.Center + base.Projectile.rotation.ToRotationVector2() * base.Projectile.height * base.Projectile.scale * 0.5f;
+			lightColor = Lighting.GetColor((int)lighting.X / 16, (int)lighting.Y / 16) * MathHelper.Lerp(1f, 0f, (float)base.Projectile.alpha / 255f);
+			Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+			Main.EntitySpriteDraw(texture, base.Projectile.Center - Main.screenPosition, null, lightColor, base.Projectile.rotation + MathHelper.PiOver2 - MathHelper.ToRadians(base.Projectile.spriteDirection * 15f), new Vector2(texture.Width / 2 - base.Projectile.spriteDirection * 8, texture.Height - 14), base.Projectile.scale, base.Projectile.spriteDirection < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+			if(base.Projectile.ai[1] / base.Projectile.ai[0] < 0.75f) {
+				Player player = Main.player[base.Projectile.owner];
+				float swingTime = base.Projectile.ai[1] / (base.Projectile.ai[0] * 0.75f);
+				for(int e = 0; e < 4; e++) swingTime = MathHelper.SmoothStep(0f, 1f, swingTime);
+				lightColor.A = 0;
+				if(lightColor.R > Color.ForestGreen.R) lightColor.R = Color.ForestGreen.R;
+				if(lightColor.G > Color.ForestGreen.G) lightColor.G = Color.ForestGreen.G;
+				if(lightColor.B > Color.ForestGreen.B) lightColor.B = Color.ForestGreen.B;
+				swingTime = Vector2.UnitX.RotatedBy(swingTime * MathHelper.Pi).Y - 0.4f;
+				if(swingTime < 0f) swingTime = 0f;
+				texture = (Texture2D)ModContent.Request<Texture2D>("CalamityBardHealer/Projectiles/Slash_3");
+				Main.EntitySpriteDraw(texture, player.MountedCenter - new Vector2(4, 2) * player.Directions - Main.screenPosition, null, lightColor * swingTime * 0.3f, base.Projectile.rotation + MathHelper.ToRadians(base.Projectile.spriteDirection * 15f), texture.Size() / 2, base.Projectile.scale * 1.4f, base.Projectile.spriteDirection < 0 ? SpriteEffects.FlipVertically : SpriteEffects.None, 0);
+			}
+			return false;
+		}
+		public override bool? CanDamage() => base.Projectile.ai[1] < base.Projectile.ai[0] * 0.6f && base.Projectile.ai[1] > base.Projectile.ai[0] * 0.1f ? null : false;
+		public override void SendExtraAI(BinaryWriter writer) => writer.Write(Projectile.direction);
+		public override void ReceiveExtraAI(BinaryReader reader) => Projectile.direction = reader.ReadInt32();
+	}
+}
